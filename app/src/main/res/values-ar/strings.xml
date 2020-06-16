@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ROPT-Driver</string>
+    <string name="e_mail">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_home">الصفحة الرئيسية</string>
+    <string name="title_activity_home">الصفحة الرئيسية</string>
+    <string name="nav_header_title">اسم السائق</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_profile">الملف الشخصي</string>
+    <string name="menu_notification">إشعارات</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="logout">تسجيل خروج</string>
+    <string name="settings">الإعدادات</string>
+    <string name="search">بحث</string>
+    <string name="nice_to_see_you">من الجميل أن نراك!</string>
+    <string name="forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="register_now">سجل الان</string>
+    <string name="you_are_not_a_member_yet">أنت لست عضوا حتى الآن!</string>
+    <string name="ropt">ROPT</string>
+    <string name="button">Button</string>
+    <string name="todo">TODO</string>
+    <string name="next">التالى</string>
+    <string name="full_name">الاسم الكامل</string>
+    <string name="phone">هاتف</string>
+    <string name="driver_s_personal_information">معلومات السائق الشخصية</string>
+    <string name="city">مدينة</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="confirme">تأكيد</string>
+    <string name="truck_image">صورة الشاحنة</string>
+    <string name="truck_license_no">رقم رخصة الشاحنة ..</string>
+    <string name="driver_s_license_no">رقم رخصة القيادة</string>
+    <string name="truck_license_image">صورة رخصة الشاحنة</string>
+    <string name="driver_s_license_image">صورة رخصة القيادة</string>
+    <string name="birthday_dd_mm_yy">تاريخ الميلاد : سنة / شهر / يوم</string>
+    <string name="truck_type">نوع الشاحنة :</string>
+    <string name="driver_s_image">صورة السائق</string>
+    <string name="update">تحديث</string>
+    <string name="order_detail">"تفاصيل الطلب"</string>
+    <string name="start_trip">"ابدأ الرحلة"</string>
+    <string name="completed">"منتهى"</string>
+    <string name="underway">"قيد التنفيذ…"</string>
+    <string name="name">"اسم"</string>
+    <string name="hasan_algoharey">Hasan Algoharey</string>
+    <string name="mail">"بريد"</string>
+    <string name="hassanalgoharey_gmail_com">hassanalgoharey@gmail.com</string>
+    <string name="_01025942627">01025942627</string>
+    <string name="open_our_page">"افتح صفحتنا"</string>
+    <string name="sign_out">"تسجيل الخروج"</string>
+    <string name="terms_and_conditions">"الأحكام والشروط"</string>
+    <string name="app_version_1_0_0">"إصدار التطبيق 1.0.0"</string>
+    <string name="finish_trip" >"إنهاء الرحلة</string>
+    <string-array name="truck_type">
+        <item>ربع</item>
+        <item>نص</item>
+        <item>كامل</item>
+    </string-array>
+
+
+</resources>

@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">ROPT-Driver</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_home">Home</string>
+    <string name="title_activity_home">Home</string>
+    <string name="nav_header_title">Drivers Name</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_notification">Notifications</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="logout">Log out</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="nice_to_see_you">Nice to see you!</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="register_now">Register now</string>
+    <string name="you_are_not_a_member_yet">You are not a member yet!</string>
+    <string name="ropt">ROPT</string>
+    <string name="button">Button</string>
+    <string name="todo">TODO</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone</string>
+    <string name="next">Next</string>
+    <string name="driver_s_personal_information">Driver\'s personal information</string>
+    <string name="city">City</string>
+    <string name="confirm_password">Confirm-Password</string>
+    <string name="confirme">Confirme</string>
+    <string name="truck_image">Truck Image</string>
+    <string name="truck_license_no">Truck license number ..</string>
+    <string name="driver_s_license_no">Driver\'s license number..</string>
+    <string name="truck_license_image">Truck license image</string>
+    <string name="driver_s_license_image">Driver\'s license image</string>
+    <string name="birthday_dd_mm_yy">Date of Birth : dd / mm / yy</string>
+    <string name="truck_type">Truck type :</string>
+    <string name="driver_s_image">Driver\'s image</string>
+
+    <string-array name="truck_type">
+        <item>Quarter</item>
+        <item>Half</item>
+        <item>Full</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="update">Update</string>
+    <string name="order_detail">Order detail</string>
+    <string name="start_trip">Start trip</string>
+    <string name="completed">Completed</string>
+    <string name="underway">Underway…</string>
+    <string name="name">Name</string>
+    <string name="hasan_algoharey">Hasan Algoharey</string>
+    <string name="mail">Mail</string>
+    <string name="hassanalgoharey_gmail_com">hassanalgoharey@gmail.com</string>
+    <string name="_01025942627">01025942627</string>
+    <string name="open_our_page">Open Our Page</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="app_version_1_0_0">App Version 1.0.0</string>
+    <string name="finish_trip">"Finish trip</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
+
+
+</resources>
