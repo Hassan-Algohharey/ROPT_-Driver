@@ -45,6 +45,8 @@ public class AdapterHomeposts extends RecyclerView.Adapter<AdapterHomeposts.MyHo
         String Distance = userList.get(position).getoDis();
         String From = userList.get(position).getoFrom();
         final String Oid = userList.get(position).getoId();
+        final String  latlngstart =userList.get(position).getoStart();
+        final String  latlngend =userList.get(position).getoEnd();
         String Price = userList.get(position).getoPrice();
         String Status = userList.get(position).getoStatus();
         String Time = userList.get(position).getoTime();
@@ -84,6 +86,9 @@ public class AdapterHomeposts extends RecyclerView.Adapter<AdapterHomeposts.MyHo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context.getApplicationContext(), MapsActivity.class);
+                intent.putExtra("latlngStart",latlngstart);
+                intent.putExtra("latlngEnd",latlngend);
+                intent.putExtra("activity","home");
                 intent.putExtra("oId", Oid);
                 context.startActivity(intent);
             }

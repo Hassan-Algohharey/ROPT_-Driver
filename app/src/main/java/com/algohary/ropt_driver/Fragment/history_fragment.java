@@ -24,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -32,8 +31,9 @@ import java.util.Objects;
  */
 public class history_fragment extends Fragment {
 
-    String cId;
+    String uId;
     FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
     private RecyclerView recyclerView;
     private AdapterHistory adapterHistory;
     private List<ModelHistory> userList;
@@ -54,34 +54,34 @@ public class history_fragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        uId = firebaseUser.getUid();
+
+
         userList = new ArrayList<>();
         get_history_order();
-
 
 
         return view;
     }
 
     private void get_history_order() {
-         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Drivers/" + uId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Toast.makeText(getActivity(), firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
                 userList.clear();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    ModelHistory modelHistory = dataSnapshot1.getValue(ModelHistory.class);
+                if (dataSnapshot.child("Orders").exists()) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.child("Orders").getChildren()) {
+
+                        ModelHistory modelHistory = dataSnapshot1.getValue(ModelHistory.class);
+                        userList.add(modelHistory);
 
 
-                    assert modelHistory != null;
-                    assert firebaseUser != null;
-                    if (Objects.equals(modelHistory.getoStatus(), "Finished"))
-                        if (Objects.equals(modelHistory.getcId(), firebaseUser.getUid())) {
-                            userList.add(modelHistory);
-                        }
-
-                    adapterHistory = new AdapterHistory(getActivity(), userList);
-                    recyclerView.setAdapter(adapterHistory);
+                        adapterHistory = new AdapterHistory(getActivity(), userList);
+                        recyclerView.setAdapter(adapterHistory);
+                    }
                 }
 
             }

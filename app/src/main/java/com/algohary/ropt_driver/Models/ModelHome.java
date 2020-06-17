@@ -1,13 +1,13 @@
 package com.algohary.ropt_driver.Models;
 
 public class ModelHome {
-    private String oCar,oDis,oFrom,oId,oPrice,oStatus,oTime, oTo, uId,uPhone,cId,sLocation , eLocation;
+    private String oCar,oDis,oFrom,oId,oPrice,oStatus,oTime, oTo, uId,uPhone,cId,sLocation , eLocation,oEnd,oStart;
 
 
     public ModelHome() {
     }
 
-    public ModelHome(String oCar, String oDis, String oFrom, String oId, String oPrice, String oStatus, String oTime, String oTo, String uId, String uPhone, String cId, String sLocation, String eLocation) {
+    public ModelHome(String oCar, String oDis, String oFrom, String oId, String oPrice, String oStatus, String oTime, String oTo, String uId, String uPhone, String cId, String sLocation, String eLocation, String oEnd, String oStart) {
         this.oCar = oCar;
         this.oDis = oDis;
         this.oFrom = oFrom;
@@ -21,6 +21,8 @@ public class ModelHome {
         this.cId = cId;
         this.sLocation = sLocation;
         this.eLocation = eLocation;
+        this.oEnd = oEnd;
+        this.oStart = oStart;
     }
 
     public String getoCar() {
@@ -125,5 +127,21 @@ public class ModelHome {
 
     public void seteLocation(String eLocation) {
         this.eLocation = eLocation;
+    }
+
+    public String getoEnd() {
+        return oEnd;
+    }
+
+    public void setoEnd(String oEnd) {
+        this.oEnd = oEnd;
+    }
+
+    public String getoStart() {
+        return oStart;
+    }
+
+    public void setoStart(String oStart) {
+        this.oStart = oStart;
     }
 }

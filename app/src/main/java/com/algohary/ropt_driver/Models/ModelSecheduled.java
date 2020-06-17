@@ -1,12 +1,12 @@
 package com.algohary.ropt_driver.Models;
 
 public class ModelSecheduled {
-    private String oCar,oDis,oFrom,oId,oPrice,oStatus,oTime, oTo, uId,uPhone,cId;
+    private String oCar,oDis,oFrom,oId,oPrice,oStatus,oTime, oTo, uId,uPhone,cId,oEnd,oStart;
 
     public ModelSecheduled() {
     }
 
-    public ModelSecheduled(String oCar, String oDis, String oFrom, String oId, String oPrice, String oStatus, String oTime, String oTo, String uId, String uPhone, String cId) {
+    public ModelSecheduled(String oCar, String oDis, String oFrom, String oId, String oPrice, String oStatus, String oTime, String oTo, String uId, String uPhone, String cId, String oEnd, String oStart) {
         this.oCar = oCar;
         this.oDis = oDis;
         this.oFrom = oFrom;
@@ -18,6 +18,8 @@ public class ModelSecheduled {
         this.uId = uId;
         this.uPhone = uPhone;
         this.cId = cId;
+        this.oEnd = oEnd;
+        this.oStart = oStart;
     }
 
     public String getoCar() {
@@ -106,5 +108,21 @@ public class ModelSecheduled {
 
     public void setcId(String cId) {
         this.cId = cId;
+    }
+
+    public String getoEnd() {
+        return oEnd;
+    }
+
+    public void setoEnd(String oEnd) {
+        this.oEnd = oEnd;
+    }
+
+    public String getoStart() {
+        return oStart;
+    }
+
+    public void setoStart(String oStart) {
+        this.oStart = oStart;
     }
 }

@@ -67,6 +67,7 @@ public class registertion extends AppCompatActivity {
         hashMap.put("Email", email);
         hashMap.put("Phone_num", phone_num);
         hashMap.put("City_address", city_address);
+        hashMap.put("cId",Uid);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference("Drivers");
         databaseReference.child(Uid).setValue(hashMap);

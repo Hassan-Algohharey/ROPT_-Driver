@@ -19,10 +19,13 @@ import androidx.fragment.app.FragmentActivity;
 import com.algohary.ropt_driver.Models.Modelinfo;
 import com.algohary.ropt_driver.Models.Modelinfo_driver;
 import com.algohary.ropt_driver.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int state = 1;
     Button startTrip;
     ArrayList<LatLng> path;
-    String oId;
+    String oId, latlngS, latlngE, uId, activity;
     LinearLayout linearLayout;
     Button button2;
     ImageView image_map;
@@ -63,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private double[] LatLngStart;
     private double[] LatLngEnd;
-    private DatabaseReference databaseReference, reference;
+    private DatabaseReference databaseReference, reference, driverOrderReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +81,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         img = getResources().getDrawable(R.drawable.ic_done_green_24dp);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        uId = firebaseUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference("Orders");
         databaseReference = FirebaseDatabase.getInstance().getReference("Notifications");
+        driverOrderReference = FirebaseDatabase.getInstance().getReference("Drivers/" + uId);
 
         image_map = findViewById(R.id.image_truck_detail);
         date_order = findViewById(R.id.date_post);
@@ -116,6 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } else {
                     String timesStamp = String.valueOf(System.currentTimeMillis());
                     HashMap<Object, String> hashMap = new HashMap<>();
+                    HashMap<Object, String> hashMap1 = new HashMap<>();
                     hashMap.put("cId", firebaseUser.getUid());
                     hashMap.put("cName", modelinfo_driver.getFull_name());
                     hashMap.put("cPhone", modelinfo_driver.getPhone_num());
@@ -126,8 +132,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     hashMap.put("oId", modelinfo.getoId());
                     hashMap.put("uId", modelinfo.getuId());
                     databaseReference.child(timesStamp).setValue(hashMap);
-
                     reference.child(oId).child("oStatus").setValue("Finished");
+
+                    hashMap1.put("oCar", modelinfo.getoCar());
+                    hashMap1.put("oDis", modelinfo.getoDis());
+                    hashMap1.put("oFrom", modelinfo.getoFrom());
+                    hashMap1.put("oPrice", modelinfo.getoPrice());
+                    hashMap1.put("oStatus", "Finished");
+                    hashMap1.put("oTime", modelinfo.getoTime());
+                    hashMap1.put("uPhone", modelinfo.getuPhone());
+                    hashMap1.put("oEnd", modelinfo.getoEnd());
+                    hashMap1.put("oStart", modelinfo.getoStart());
+                    hashMap1.put("oTo", modelinfo.getoTo());
+                    hashMap1.put("oId", modelinfo.getoId());
+                    driverOrderReference.child("Orders").child(modelinfo.getoId()).setValue(hashMap1);
+
+
                 }
             }
         });
@@ -164,10 +184,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+        latlngS = getIntent().getStringExtra("latlngStart");
+        latlngE = getIntent().getStringExtra("latlngEnd");
+
         oId = getIntent().getStringExtra("oId");
+        activity = getIntent().getStringExtra("activity");
         cheackDrawable();
+
         get_driver_info();
-        get_inf_order();
+        if (activity.equals("history")) {
+            get_inf_history();
+
+        } else {
+            get_inf_order();
+        }
+        LatLngStart = latlng_start(latlngS);
+        LatLngEnd = latlng_End(latlngE);
+
 
     }
 
@@ -205,8 +238,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (dataSnapshot.child(oId).exists()) {
                     modelinfo = dataSnapshot.child(oId).getValue(Modelinfo.class);
                     assert modelinfo != null;
-                    LatLngStart = latlng_start(modelinfo.getoStart());
-                    LatLngEnd = latlng_End(modelinfo.getoEnd());
                     if (Objects.equals(modelinfo.getoStatus(), "Accepted...")) {
                         phone.setVisibility(View.VISIBLE);
                         startTrip.setText(R.string.finish_trip);
@@ -227,6 +258,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     distance.setText(modelinfo.getoDis());
                     to.setText(modelinfo.getoTo());
                     from.setText(modelinfo.getoFrom());
+
+
+                    if (Objects.equals(modelinfo.getoCar(), "1")) {
+                        try {
+                            Picasso.get().load(R.drawable.truck_1).placeholder(R.drawable.truck_1).into(image_map);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (Objects.equals(modelinfo.getoCar(), "2")) {
+                        try {
+                            Picasso.get().load(R.drawable.truck_2).placeholder(R.drawable.truck_2).into(image_map);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (Objects.equals(modelinfo.getoCar(), "3")) {
+                        try {
+                            Picasso.get().load(R.drawable.truck_3).placeholder(R.drawable.truck_3).into(image_map);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void get_inf_history() {
+
+        driverOrderReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                if (dataSnapshot.child("Orders").exists()) {
+                    modelinfo = dataSnapshot.child("Orders").child(oId).getValue(Modelinfo.class);
+                    assert modelinfo != null;
+
+                        startTrip.setText(R.string.completed);
+                        startTrip.setEnabled(false);
+                        startTrip.setClickable(false);
+                        startTrip.setBackgroundResource(R.drawable.button_default_gray);
+                        startTrip.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, img, null);
+
+                    date_order.setText(getDate(Long.parseLong(modelinfo.getoTime())));
+                    phone.setVisibility(View.VISIBLE);
+                    phone.setText(modelinfo.getuPhone());
+                    price.setText(modelinfo.getoPrice());
+                    distance.setText(modelinfo.getoDis());
+                    to.setText(modelinfo.getoTo());
+                    from.setText(modelinfo.getoFrom());
+
 
                     if (Objects.equals(modelinfo.getoCar(), "1")) {
                         try {
@@ -272,23 +361,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
+
+
         // mMap.setMyLocationEnabled(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
             return;
         }
-        //Toast.makeText(this, latlngh1[0], Toast.LENGTH_SHORT).show();
 
 
         // path.add(new LatLng(LatLngStart[0], LatLngStart[1]));
         // path.add(new LatLng(LatLngEnd[0], LatLngEnd[1]));
 
-        // LatLng ostart = new LatLng(LatLngStart[0], LatLngStart[1]);
-        // LatLng oend = new LatLng(LatLngEnd[0], LatLngEnd[1]);
+        LatLng ostart = new LatLng(LatLngStart[0], LatLngStart[1]);
+        LatLng oend = new LatLng(LatLngEnd[0], LatLngEnd[1]);
 
 
-        // mMap.addMarker(new MarkerOptions().position(ostart).title("Start").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        //mMap.addMarker(new MarkerOptions().position(oend).title("End"));
+        mMap.addMarker(new MarkerOptions().position(ostart).title("Start").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.addMarker(new MarkerOptions().position(oend).title("End"));
         /*if (path.size() == 2) {
             //Toast.makeText(this, ""+path.size(), Toast.LENGTH_SHORT).show();
             String url = getRequestUrl(path.get(0), path.get(1));
@@ -296,7 +387,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             taskRequestDirections.execute(url);
         }*/
 
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ostart, 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ostart, 10));
 
     }
 
