@@ -1,8 +1,11 @@
 package com.algohary.ropt_driver.Activity;
 
+
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.algohary.ropt_driver.DirectionsParser;
 import com.algohary.ropt_driver.Models.Modelinfo;
 import com.algohary.ropt_driver.Models.Modelinfo_driver;
 import com.algohary.ropt_driver.R;
@@ -26,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +39,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -84,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         uId = firebaseUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference("Orders");
         databaseReference = FirebaseDatabase.getInstance().getReference("Notifications");
-        driverOrderReference = FirebaseDatabase.getInstance().getReference("Drivers/" + uId);
+        driverOrderReference = FirebaseDatabase.getInstance().getReference("History/" + uId);
 
         image_map = findViewById(R.id.image_truck_detail);
         date_order = findViewById(R.id.date_post);
@@ -145,7 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     hashMap1.put("oStart", modelinfo.getoStart());
                     hashMap1.put("oTo", modelinfo.getoTo());
                     hashMap1.put("oId", modelinfo.getoId());
-                    driverOrderReference.child("Orders").child(modelinfo.getoId()).setValue(hashMap1);
+                    driverOrderReference.child(modelinfo.getoId()).setValue(hashMap1);
 
 
                 }
@@ -298,15 +307,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
-                if (dataSnapshot.child("Orders").exists()) {
-                    modelinfo = dataSnapshot.child("Orders").child(oId).getValue(Modelinfo.class);
+                if (dataSnapshot.child(oId).exists()) {
+                    modelinfo = dataSnapshot.child(oId).getValue(Modelinfo.class);
                     assert modelinfo != null;
 
-                        startTrip.setText(R.string.completed);
-                        startTrip.setEnabled(false);
-                        startTrip.setClickable(false);
-                        startTrip.setBackgroundResource(R.drawable.button_default_gray);
-                        startTrip.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, img, null);
+                    startTrip.setText(R.string.completed);
+                    startTrip.setEnabled(false);
+                    startTrip.setClickable(false);
+                    startTrip.setBackgroundResource(R.drawable.button_default_gray);
+                    startTrip.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, img, null);
 
                     date_order.setText(getDate(Long.parseLong(modelinfo.getoTime())));
                     phone.setVisibility(View.VISIBLE);
@@ -361,31 +370,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
-
-
-        // mMap.setMyLocationEnabled(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
             return;
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
 
-
-        // path.add(new LatLng(LatLngStart[0], LatLngStart[1]));
-        // path.add(new LatLng(LatLngEnd[0], LatLngEnd[1]));
-
+        path.add(new LatLng(LatLngStart[0], LatLngStart[1]));
+        path.add(new LatLng(LatLngEnd[0], LatLngEnd[1]));
         LatLng ostart = new LatLng(LatLngStart[0], LatLngStart[1]);
         LatLng oend = new LatLng(LatLngEnd[0], LatLngEnd[1]);
-
-
         mMap.addMarker(new MarkerOptions().position(ostart).title("Start").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.addMarker(new MarkerOptions().position(oend).title("End"));
-        /*if (path.size() == 2) {
+        if (path.size() == 2) {
             //Toast.makeText(this, ""+path.size(), Toast.LENGTH_SHORT).show();
             String url = getRequestUrl(path.get(0), path.get(1));
             TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
             taskRequestDirections.execute(url);
-        }*/
+        }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ostart, 10));
 
@@ -413,7 +417,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-   /* private String getRequestUrl(LatLng origin, LatLng dest) {
+    private String getRequestUrl(LatLng origin, LatLng dest) {
         //Value of origin
         String str_org = "origin=" + origin.latitude + "," + origin.longitude;
         //Value of destination
@@ -427,10 +431,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Output format
         String output = "json";
         //Create url to request
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=AIzaSyBYJdokp0OpRsTV024pDeehqUh0WyjnL7w";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=AIzaSyCqDAYLKDQH7BUA7Z_fo7K1Cgawl2BtBRg";
         return url;
 
-    }*/
+    }
 
     private String requestDirection(String reqUrl) throws IOException {
         String responseString = "";
@@ -468,7 +472,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    /*@Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case LOCATION_REQUEST:
@@ -477,7 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 break;
         }
-    }*/
+    }
 
     private String getDate(long time) {
         Calendar calendar = Calendar.getInstance();
@@ -489,8 +493,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-  /*  public class TaskRequestDirections extends AsyncTask<String, Void, String> {
+    public class TaskRequestDirections extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -510,9 +513,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             TaskParser taskParser = new TaskParser();
             taskParser.execute(s);
         }
-    }*/
+    }
 
-   /* public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+    public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
 
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
@@ -528,7 +531,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return routes;
         }
 
-       /* @Override
+        @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             //Get list route and display it into the map
 
@@ -559,7 +562,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(getApplicationContext(), "Direction not found!", Toast.LENGTH_SHORT).show();
             }
 
-        }*/
+        }
+    }
+
 }
 
 

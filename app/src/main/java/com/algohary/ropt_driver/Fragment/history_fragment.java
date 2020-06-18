@@ -66,14 +66,14 @@ public class history_fragment extends Fragment {
     }
 
     private void get_history_order() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Drivers/" + uId);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("History" );
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Toast.makeText(getActivity(), firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
                 userList.clear();
-                if (dataSnapshot.child("Orders").exists()) {
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.child("Orders").getChildren()) {
+                if (dataSnapshot.child(uId).exists()) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.child(uId).getChildren()) {
 
                         ModelHistory modelHistory = dataSnapshot1.getValue(ModelHistory.class);
                         userList.add(modelHistory);
