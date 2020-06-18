@@ -382,8 +382,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         path.add(new LatLng(LatLngEnd[0], LatLngEnd[1]));
         LatLng ostart = new LatLng(LatLngStart[0], LatLngStart[1]);
         LatLng oend = new LatLng(LatLngEnd[0], LatLngEnd[1]);
-        mMap.addMarker(new MarkerOptions().position(ostart).title("Start").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.addMarker(new MarkerOptions().position(oend).title("End"));
+        mMap.addMarker(new MarkerOptions().position(ostart).title("Start Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.addMarker(new MarkerOptions().position(oend).title("End Point"));
         if (path.size() == 2) {
             //Toast.makeText(this, ""+path.size(), Toast.LENGTH_SHORT).show();
             String url = getRequestUrl(path.get(0), path.get(1));
